@@ -8,34 +8,27 @@
 :root{--amber:#f5a623;--danger:#b00000}
 *{box-sizing:border-box}
 body{margin:0;background:#000;color:#eee;font-family:Arial;text-align:center}
-#game{width:100vw;height:100vh;max-width:100%;max-height:100%;margin:0 auto;border:4px solid var(--amber);position:relative;overflow:hidden;background:linear-gradient(#151515,#000)}
+#game{width:860px;height:480px;max-width:95vw;margin:14px auto;border:4px solid var(--amber);position:relative;overflow:hidden;background:linear-gradient(#151515,#000)}
 .view{position:absolute;inset:0;display:none}
-#office{display:block;padding-top:20vh;font-size:5vw;position:relative}
-#hallway{position:absolute;top:0;left:50%;transform:translateX(-50%);width:30vw;height:100%;background:#000;border-left:2px solid #222;border-right:2px solid #222;padding-top:5vh;font-size:6vw;transition:.2s}
+#office{display:block;padding-top:200px;font-size:26px;position:relative}
+#hallway{position:absolute;top:0;left:50%;transform:translateX(-50%);width:260px;height:100%;background:#000;border-left:2px solid #222;border-right:2px solid #222;padding-top:30px;font-size:28px;transition:.2s}
 #hallway.light{background:#444}
 #cams{background:#0f0f0f}
-#camList{display:flex;gap:2vw;justify-content:center;flex-wrap:wrap;margin-top:2vh}
-.camBtn{padding:1vh 2vw;background:#111;border:1px solid var(--amber);color:var(--amber);cursor:pointer;font-size:3vw}
-#camView{margin-top:4vh;font-size:8vw}
-#alert{color:#ff5a5a;font-weight:bold;margin-top:1vh;font-size:3vw}
-#hud button{margin:1vw;padding:1vh 2vw;background:#111;border:1px solid var(--amber);color:var(--amber);cursor:pointer;font-size:3vw}
-#status{font-size:3vw;margin-top:1vh}
-#energyWrap{width:30vw;height:2vh;border:1px solid var(--amber);margin:1vh auto}
+#camList{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.camBtn{padding:6px 10px;background:#111;border:1px solid var(--amber);color:var(--amber);cursor:pointer}
+#camView{margin-top:36px;font-size:40px}
+#alert{color:#ff5a5a;font-weight:bold;margin-top:6px}
+#hud button{margin:4px;padding:8px 14px;background:#111;border:1px solid var(--amber);color:var(--amber);cursor:pointer}
+#status{font-size:13px;margin-top:6px}
+#energyWrap{width:260px;height:14px;border:1px solid var(--amber);margin:6px auto}
 #energy{height:100%;width:100%;background:var(--amber)}
-#jumpscare{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,#ff6b6b,var(--danger));font-size:15vw;z-index:10;white-space:pre-line}
+#jumpscare{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,#ff6b6b,var(--danger));font-size:80px;z-index:10;white-space:pre-line}
 #startPanel{position:absolute;inset:0;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
-#startPanel h1{font-size:10vw;margin-bottom:2vh;color:var(--amber)}
-#startPanel button{padding:2vh 4vw;font-size:5vw;margin:1vh;background:#111;color:var(--amber);border:2px solid var(--amber);cursor:pointer}
-.particle{position:absolute;color:#9cf;font-size:5vw;pointer-events:none;animation:zap .6s linear forwards}
-.decor{position:absolute;color:#6f6;font-size:5vw;opacity:0.3;}
+#startPanel h1{font-size:48px;margin-bottom:20px;color:var(--amber)}
+#startPanel button{padding:12px 24px;font-size:24px;margin:6px;background:#111;color:var(--amber);border:2px solid var(--amber);cursor:pointer}
+.particle{position:absolute;color:#9cf;font-size:18px;pointer-events:none;animation:zap .6s linear forwards}
+.decor{position:absolute;color:#6f6;font-size:20px;opacity:0.3;}
 @keyframes zap{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--x),var(--y))}}
-@media (max-width:600px){
-  #office{font-size:6vw;padding-top:25vw}
-  #hallway{width:40vw;font-size:7vw}
-  #camView{font-size:12vw}
-  #hud button{font-size:4vw;padding:2vw 3vw}
-  #status{font-size:4vw}
-}
 </style>
 </head>
 <body>
@@ -49,10 +42,10 @@ body{margin:0;background:#000;color:#eee;font-family:Arial;text-align:center}
   <div id="cams" class="view"><h3>CÁMARAS 📷</h3><div id="camList"></div><div id="camView">📷</div><div id="alert"></div></div>
   <div id="jumpscare"></div>
 </div>
-<div id="hud">
-  <button onclick="toggleCams()">Cámaras</button>
-  <button onclick="toggleLight()">Luz pasillo</button>
-  <button onclick="useTaser()">Taser ⚡</button>
+<div id="hud" style="display:none;">
+  <button id="btnCams">Cámaras</button>
+  <button id="btnLight">Luz pasillo</button>
+  <button id="btnTaser">Taser ⚡</button>
 </div>
 <div id="status">Hora: <b><span id="hour">12</span> AM</b> · Amenaza: <span id="threat">😐</span>
   <div id="energyWrap"><div id="energy"></div></div>Energía
@@ -65,13 +58,16 @@ function startGame(){
   resetGame();
   document.getElementById('startPanel').style.display='none';
   document.getElementById('office').style.display='block';
+  document.getElementById('hud').style.display='block'; // mostrar botones
 }
 function continueGame(){
   currentNight=Math.min(currentNight,4);
   resetGame();
   document.getElementById('startPanel').style.display='none';
   document.getElementById('office').style.display='block';
+  document.getElementById('hud').style.display='block'; // mostrar botones
 }
+
 function resetGame(){
   hour=12;nightSeconds=0;energy=100;gameOver=false;
   for(const a in anims){
@@ -80,18 +76,21 @@ function resetGame(){
   updateEnergyBar();
   addDecor();
 }
+
+// ==================== DECORACIONES ====================
 function addDecor(){
   document.querySelectorAll('.decor').forEach(d=>d.remove());
   for(let i=0;i<15;i++){
     const d=document.createElement('div');
     d.className='decor';
     d.textContent=['🎃','🕯','📦','🖤'][Math.floor(Math.random()*4)];
-    d.style.left=Math.random()*90+'vw';
-    d.style.top=Math.random()*70+'vh';
-    d.style.fontSize=(5+Math.random()*10)+'vw';
+    d.style.left=Math.random()*800+'px';
+    d.style.top=Math.random()*400+'px';
+    d.style.fontSize=(10+Math.random()*20)+'px';
     document.getElementById('game').appendChild(d);
   }
 }
+
 // ==================== ESTADO ====================
 let hour=12,energy=100,view='office',light=false,gameOver=false;
 const NIGHT_DURATION=435,HOURS_TOTAL=6,SECONDS_PER_HOUR=NIGHT_DURATION/HOURS_TOTAL;
@@ -107,6 +106,7 @@ const camView=document.getElementById('camView');
 const alertBox=document.getElementById('alert');
 const jumpscare=document.getElementById('jumpscare');
 const game=document.getElementById('game');
+
 // ==================== ANIMATRÓNICOS ====================
 const anims={
   tiger:{emoji:'🐯',room:'Backstage',origin:'Backstage',dist:100,speed:1.3,inHall:false},
@@ -114,43 +114,69 @@ const anims={
   owl:{emoji:'🦉',room:'Kitchen',origin:'Kitchen',dist:100,speed:0.9,inHall:false},
   fox:{emoji:'🦊',room:'Workshop',origin:'Workshop',dist:100,speed:0.8,inHall:false}
 };
+
 // ==================== CÁMARAS ====================
 const cameras=['Backstage','Storage','Kitchen','Workshop'];
 let currentCam='Backstage';
 let batteryCam=null;
-cameras.forEach(c=>{
-  const b=document.createElement('button');
-  b.className='camBtn';
-  b.textContent=c;
-  b.onclick=()=>selectCam(c);
-  camList.appendChild(b);
-});
-function toggleCams(){view=view==='office'?'cams':'office';office.style.display=view==='office'?'block':'none';cams.style.display=view==='cams'?'block':'none';}
+cameras.forEach(c=>{const b=document.createElement('button');b.className='camBtn';b.textContent=c;b.onclick=()=>selectCam(c);camList.appendChild(b);});
+
+function toggleCams(){view=view==='office'?'cams':'office';office.style.display=view==='office'?'block':'none';cams.style.display=view==='cams'?'block':'none';updateCamView();}
 function selectCam(c){currentCam=c;updateCamView();}
-function updateCamView(){let found=[],batteryHere=batteryCam===currentCam;for(const a in anims){if(anims[a].room===currentCam && anims[a].dist<70) found.push(anims[a].emoji);}camView.textContent=batteryHere?'🔋':found.length?found.join(' '):'📷';alertBox.textContent=batteryHere?'🔋 ENERGÍA DISPONIBLE':found.length?'⚠ MOVIMIENTO DETECTADO':'';}
+function updateCamView(){
+  let found=[],batteryHere=batteryCam===currentCam;
+  for(const a in anims){
+    if(anims[a].room===currentCam && anims[a].dist<70) found.push(anims[a].emoji);
+  }
+  camView.textContent=batteryHere?'🔋':found.length?found.join(' '):'📷';
+  alertBox.textContent=batteryHere?'🔋 ENERGÍA DISPONIBLE':found.length?'⚠ MOVIMIENTO DETECTADO':'';
+}
+
 // ==================== CONTROLES ====================
+document.getElementById('btnCams').addEventListener('click', toggleCams);
+document.getElementById('btnLight').addEventListener('click', toggleLight);
+document.getElementById('btnTaser').addEventListener('click', useTaser);
+
 function toggleLight(){if(energy<=0) return;light=!light;hallway.className=light?'light':'';}
-function useTaser(){if(energy<15||gameOver) return;let used=false;for(const a in anims){const x=anims[a];if(x.inHall){x.inHall=false;x.room=x.origin;x.dist=100;used=true;}}if(used){spawnParticles();energy-=15;updateEnergyBar();}}
+function useTaser(){
+  if(energy<15||gameOver) return;
+  let used=false;
+  for(const a in anims){const x=anims[a];if(x.inHall){x.inHall=false;x.room=x.origin;x.dist=100;used=true;}}
+  if(used){spawnParticles();energy-=15;updateEnergyBar();}
+}
+
 // ==================== EFECTOS ====================
-function spawnParticles(){for(let i=0;i<20;i++){const p=document.createElement('div');p.className='particle';p.textContent='⚡';p.style.left=50+Math.random()*40+'vw';p.style.top=20+Math.random()*40+'vh';p.style.setProperty('--x',(Math.random()*50-25)+'vw');p.style.setProperty('--y',(Math.random()*-60)+'vh');game.appendChild(p);setTimeout(()=>p.remove(),600);}
+function spawnParticles(){for(let i=0;i<20;i++){const p=document.createElement('div');p.className='particle';p.textContent='⚡';p.style.left=50+Math.random()*100+'px';p.style.top=200+Math.random()*100+'px';p.style.setProperty('--x',(Math.random()*100-50)+'px');p.style.setProperty('--y',(Math.random()*-120)+'px');game.appendChild(p);setTimeout(()=>p.remove(),600);}}
+
 // ==================== IA + PASILLO ====================
 let hallTimer={};
-function updateAnims(){if(gameOver) return;let danger=false;let hallEmoji='';for(const a in anims){
-  const x=anims[a];
-  x.dist-=Math.random()*x.speed*(currentNight*0.5+1)*4;
-  if(currentNight>=2 && a==='dog') x.dist-=0.3;
-  if(currentNight>=3 && a==='owl') x.dist-=0.2;
-  if(currentNight>=4 && a==='fox') x.dist-=0.25;
-  if(!x.inHall && x.dist<40){x.inHall=true;hallTimer[a]=8;}
-  if(x.inHall){danger=true;if(hallTimer[a]>0){hallTimer[a]-=1.7;if(light) hallEmoji+=x.emoji+' ';}else{lose();}}
-}hallway.textContent=(light && hallEmoji)?'PASILLO '+hallEmoji:'PASILLO';threatSpan.textContent=danger?'😱':'😐';if(view==='cams') updateCamView();}
+function updateAnims(){
+  if(gameOver) return;
+  let danger=false, hallEmoji='';
+  for(const a in anims){
+    const x=anims[a];
+    x.dist-=Math.random()*x.speed*(currentNight*0.5+1)*4;
+    if(currentNight>=2 && a==='dog') x.dist-=0.3;
+    if(currentNight>=3 && a==='owl') x.dist-=0.2;
+    if(currentNight>=4 && a==='fox') x.dist-=0.25;
+
+    if(!x.inHall && x.dist<40){x.inHall=true;hallTimer[a]=8;}
+    if(x.inHall){danger=true;if(hallTimer[a]>0){hallTimer[a]-=1.7;if(light) hallEmoji+=x.emoji+' ';}else{lose();}}
+  }
+  hallway.textContent=(light && hallEmoji)?'PASILLO '+hallEmoji:'PASILLO';
+  threatSpan.textContent=danger?'😱':'😐';
+  if(view==='cams') updateCamView();
+}
+
 // ==================== ENERGÍA ====================
 function drainEnergy(){if(gameOver) return;if(view==='cams') energy-=0.6;if(light) energy-=0.7;energy=Math.max(0,energy);updateEnergyBar();}
 function updateEnergyBar(){energyBar.style.width=energy+'%';}
 function spawnBattery(){batteryCam=cameras[Math.floor(Math.random()*cameras.length)];}
 function collectBattery(){if(view==='cams' && batteryCam===currentCam){energy=Math.min(100,energy+30);batteryCam=null;updateEnergyBar();}}
+
 // ==================== TIEMPO ====================
 function tickHour(){if(gameOver) return;nightSeconds++;const newHour=12+Math.floor(nightSeconds/SECONDS_PER_HOUR);if(newHour!==hour && newHour<=6){hour=newHour;hourSpan.textContent=hour;}if(nightSeconds>=NIGHT_DURATION){advanceNight();}}
+
 function advanceNight(){
   if(currentNight<4){
     currentNight++;
@@ -160,9 +186,11 @@ function advanceNight(){
     document.getElementById('startPanel').innerHTML=`<h1>Custom GAME</h1><button onclick='startGame()'>Jugar</button>`;
   }
 }
+
 // ==================== FIN ====================
 function lose(){if(gameOver) return;gameOver=true;jumpscare.style.display='flex';jumpscare.textContent='💥🐯';}
 function win(){if(gameOver) return;gameOver=true;jumpscare.style.display='flex';jumpscare.textContent='🌅 6 AM\n¡SOBREVIVISTE!';jumpscare.style.background='radial-gradient(circle,#6bff95,#1b5e20)';}
+
 // ==================== BUCLES ====================
 setInterval(updateAnims,1700);
 setInterval(drainEnergy,600);
